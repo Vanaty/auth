@@ -3,12 +3,22 @@ package itu.auth.mg.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import itu.auth.mg.DAO.TokenRepository;
-import itu.auth.mg.DAO.UserRepository;
 import itu.auth.mg.model.Token;
 import itu.auth.mg.model.User;
+import itu.auth.mg.repositories.TokenRepository;
+import itu.auth.mg.repositories.UserRepository;
+import jakarta.mail.MessagingException;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -23,26 +33,37 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
-    public void registerUser(String email, String password) {
+    public void registerUser(String email, String password) throws MessagingException {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
         userRepository.save(user);
 
-        String generatedToken = UUID.randomUUID().toString();
-        Token token = new Token();
-        token.setToken(generatedToken);
-        token.setExpiration(LocalDateTime.now().plusHours(24));
-        token.setUser(user);
+        String token = UUID.randomUUID().toString();
+        String pin = String.format("%06d", new Random().nextInt(999999));
 
-        tokenRepository.save(token);
-        emailService.sendVerificationEmail(email, generatedToken);
+        Token verificationToken = new Token();
+        verificationToken.setToken(token);
+        verificationToken.setPin(pin);
+        verificationToken.setExpiration(LocalDateTime.now().plusHours(24));
+        verificationToken.setUser(user);
+
+        tokenRepository.save(verificationToken);
+        emailService.sendVerificationEmail(email, token, pin);
     }
 
-    public boolean verifyToken(String tokenString) {
-        Token token = tokenRepository.findByToken(tokenString).orElse(null);
+    public boolean verifyByToken(String token) {
+        Optional<Token> optionalToken = tokenRepository.findByToken(token);
+        return optionalToken.map(this::activateUser).orElse(false);
+    }
 
-        if (token != null && token.isActive() && token.getExpiration().isAfter(LocalDateTime.now())) {
+    public boolean verifyByPin(String pin) {
+        Optional<Token> optionalToken = tokenRepository.findByPin(pin);
+        return optionalToken.map(this::activateUser).orElse(false);
+    }
+
+    private boolean activateUser(Token token) {
+        if (token.isActive() && token.getExpiration().isAfter(LocalDateTime.now())) {
             User user = token.getUser();
             user.setVerified(true);
             userRepository.save(user);
@@ -54,4 +75,5 @@ public class UserService {
         return false;
     }
 }
+
 

@@ -23,7 +23,7 @@ public class EmailService {
     @Autowired
     private TemplateEngine templateEngine;
 
-    public void sendVerificationEmail(String to, String token, Integer pin) throws MessagingException {
+    public void sendVerificationEmail(String to, String token, String pin) throws MessagingException {
 
         Context context = new Context();
         context.setVariable("token", token);

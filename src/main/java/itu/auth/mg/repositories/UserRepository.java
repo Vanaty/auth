@@ -1,4 +1,4 @@
-package itu.auth.mg.DAO;
+package itu.auth.mg.repositories;
 
 
 import itu.auth.mg.model.User;

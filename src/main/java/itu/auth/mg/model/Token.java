@@ -1,17 +1,18 @@
 package itu.auth.mg.model;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Table(name = "token")
 public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String token;
+    private String token; // Lien de vérification
+    private String pin;   // Code PIN
 
     private LocalDateTime expiration;
 

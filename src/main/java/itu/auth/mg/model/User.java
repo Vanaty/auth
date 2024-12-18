@@ -18,5 +18,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    private String nom;
+
+    private String prenom;
+
     private boolean isVerified = false;   
 }

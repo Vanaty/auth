@@ -7,6 +7,7 @@ import itu.auth.mg.model.Token;
 import itu.auth.mg.model.User;
 import itu.auth.mg.repositories.TokenRepository;
 import itu.auth.mg.repositories.UserRepository;
+import itu.auth.mg.util.PasswordUtil;
 import jakarta.mail.MessagingException;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,12 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private PasswordUtil passwordUtil;
+
     public void registerUser(User user) throws MessagingException {
+        
+        user.setPassword(passwordUtil.hashPassword(user.getPassword()));
         userRepository.save(user);
 
         String token = UUID.randomUUID().toString();

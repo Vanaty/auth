@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +17,5 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private boolean isVerified = false;
+    private boolean isVerified = false;   
 }
-

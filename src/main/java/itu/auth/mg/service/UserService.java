@@ -13,13 +13,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -33,10 +26,7 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
-    public void registerUser(String email, String password) throws MessagingException {
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
+    public void registerUser(User user) throws MessagingException {
         userRepository.save(user);
 
         String token = UUID.randomUUID().toString();
@@ -49,7 +39,7 @@ public class UserService {
         verificationToken.setUser(user);
 
         tokenRepository.save(verificationToken);
-        emailService.sendVerificationEmail(email, token, pin);
+        emailService.sendVerificationEmail(user.getEmail(), token, pin);
     }
 
     public boolean verifyByToken(String token) {

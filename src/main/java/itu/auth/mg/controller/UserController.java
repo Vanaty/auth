@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import itu.auth.mg.args.ApiResponse;
+import itu.auth.mg.model.User;
 import itu.auth.mg.service.UserService;
 import jakarta.mail.MessagingException;
 
@@ -16,8 +17,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<String>> register(@RequestParam String email, @RequestParam String password) throws MessagingException {
-        userService.registerUser(email, password);
+    public ResponseEntity<ApiResponse<String>> register(@RequestBody User user) throws MessagingException {
+        userService.registerUser(user);
         return ResponseEntity.ok(new ApiResponse<>(true, "Inscription réussie ! Vérifiez votre e-mail.", null));
     }
 

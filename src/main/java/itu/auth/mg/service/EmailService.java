@@ -22,8 +22,10 @@ public class EmailService {
     public void sendVerificationEmail(String to, String token, String pin) throws MessagingException {
 
         Context context = new Context();
-        context.setVariable("token", token);
-        context.setVariable("pin", pin);
+
+        String url = "http://localhost:8080/api/users/verify?token="+token;
+        context.setVariable("verification", url);
+        context.setVariable("pin_code", pin);
 
         String htmlContent = templateEngine.process("email-verification", context);
 

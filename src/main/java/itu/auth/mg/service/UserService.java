@@ -7,6 +7,7 @@ import itu.auth.mg.model.Token;
 import itu.auth.mg.model.User;
 import itu.auth.mg.repositories.TokenRepository;
 import itu.auth.mg.repositories.UserRepository;
+import itu.auth.mg.util.PasswordUtil;
 import jakarta.mail.MessagingException;
 
 import java.time.LocalDateTime;
@@ -26,8 +27,13 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private PasswordUtil passwordUtil;
+
     public void registerUser(User user) throws MessagingException {
-        userRepository.save(user);
+        
+        user.setPassword(passwordUtil.hashPassword(user.getPassword()));
+        // userRepository.save(user);
 
         String token = UUID.randomUUID().toString();
         String pin = String.format("%06d", new Random().nextInt(999999));
@@ -38,7 +44,7 @@ public class UserService {
         verificationToken.setExpiration(LocalDateTime.now().plusHours(24));
         verificationToken.setUser(user);
 
-        tokenRepository.save(verificationToken);
+        // tokenRepository.save(verificationToken);
         emailService.sendVerificationEmail(user.getEmail(), token, pin);
     }
 

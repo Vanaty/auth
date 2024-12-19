@@ -33,7 +33,7 @@ public class UserService {
     public void registerUser(User user) throws MessagingException {
         
         user.setPassword(passwordUtil.hashPassword(user.getPassword()));
-        userRepository.save(user);
+        // userRepository.save(user);
 
         String token = UUID.randomUUID().toString();
         String pin = String.format("%06d", new Random().nextInt(999999));
@@ -44,7 +44,7 @@ public class UserService {
         verificationToken.setExpiration(LocalDateTime.now().plusHours(24));
         verificationToken.setUser(user);
 
-        tokenRepository.save(verificationToken);
+        // tokenRepository.save(verificationToken);
         emailService.sendVerificationEmail(user.getEmail(), token, pin);
     }
 

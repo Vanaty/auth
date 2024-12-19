@@ -9,9 +9,10 @@ import java.time.LocalDateTime;
 public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_token")
     private Long id;
 
-    private String token; // Lien de vérification
+    private String token;
     private String pin;   // Code PIN
 
     private LocalDateTime expiration;
@@ -19,7 +20,7 @@ public class Token {
     private boolean active = true;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_user", nullable = false)
     private User user;
 }
 

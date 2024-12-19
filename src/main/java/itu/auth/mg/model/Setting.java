@@ -8,15 +8,14 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "session")
-public class Session {
+@Table(name = "setting")
+public class Setting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_session")
+    @Column(name = "id_setting")
     private Long id;
 
-    @Column(nullable = false)
-    private Long duree;
-
+    private double sessionDuree = 0;
+    private double tentativeMax = 3;
     private LocalDateTime daty; 
 }

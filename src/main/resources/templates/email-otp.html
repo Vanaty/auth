@@ -55,13 +55,9 @@
     <div class="container">
         <h1>Vérifiez votre compte</h1>
         <p>Bonjour,</p>
-        <p>Merci de vous être inscrit sur notre plateforme. Pour activer votre compte, veuillez cliquer sur le bouton ci-dessous :</p>
-        <a th:href="${verification}" class="button">Vérifier mon compte</a>
-        <br>
-        <a th:href="${verification}">[[${verification}]]</a>
-        <p>Ou utilisez ce code PIN pour vérifier votre compte :</p>
+        <p>Utilisez ce code PIN pour vérifier votre compte :</p>
         <h2>[[${pin_code}]]</h2>
-        <p>Ce lien ou code PIN expirera dans 24 heurs.</p>
+        <p>Ce code PIN expirera dans [[${timer}]] sec.</p>
         <p>Si vous n'avez pas demandé cette inscription, veuillez ignorer cet e-mail.</p>
         <div class="footer">
             &copy; 2024 Auth. Tous droits réservés.

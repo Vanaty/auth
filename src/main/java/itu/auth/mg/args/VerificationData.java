@@ -1,4 +1,4 @@
-package itu.auth.mg.util;
+package itu.auth.mg.args;
 
 import lombok.Data;
 

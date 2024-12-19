@@ -30,7 +30,7 @@ public class UserController {
         return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Token invalide ou expiré.", null));
     }
 
-    @PostMapping("/verify-pin")
+    @PostMapping("/verify_pin")
     public ResponseEntity<ApiResponse<String>> verifyByPin(@RequestParam String pin) {
         if (userService.verifyByPin(pin)) {
             return ResponseEntity.ok(new ApiResponse<>(true, "Compte activé avec succès !", null));

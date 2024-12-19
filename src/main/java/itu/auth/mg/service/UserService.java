@@ -8,9 +8,11 @@ import itu.auth.mg.model.User;
 import itu.auth.mg.repositories.TokenRepository;
 import itu.auth.mg.repositories.UserRepository;
 import itu.auth.mg.util.PasswordUtil;
+import itu.auth.mg.util.Utilitaire;
 import jakarta.mail.MessagingException;
 
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -35,26 +37,36 @@ public class UserService {
         user.setPassword(passwordUtil.hashPassword(user.getPassword()));
         // userRepository.save(user);
 
-        String token = UUID.randomUUID().toString();
-        String pin = String.format("%06d", new Random().nextInt(999999));
-
+        
         Token verificationToken = new Token();
-        verificationToken.setToken(token);
+        // verificationToken.setToken(token);
+        String pin = Utilitaire.generatePin();
         verificationToken.setPin(pin);
         verificationToken.setExpiration(LocalDateTime.now().plusHours(24));
         verificationToken.setUser(user);
 
         // tokenRepository.save(verificationToken);
-        emailService.sendVerificationEmail(user.getEmail(), token, pin);
+        emailService.sendVerificationEmail(user.getEmail(), Utilitaire.encodePin(pin), pin);
     }
 
-    public boolean verifyByToken(String token) {
-        Optional<Token> optionalToken = tokenRepository.findByToken(token);
-        return optionalToken.map(this::activateUser).orElse(false);
+    public boolean loginUser(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return user.isVerified() && passwordUtil.verifyPassword(password, user.getPassword());
+        }
+        return false;
     }
+    
 
-    public boolean verifyByPin(String pin) {
-        Optional<Token> optionalToken = tokenRepository.findByPin(pin);
+    public boolean verify(String pin) {
+        Optional<Token> optionalToken;
+        if (pin == null) {
+            return false;
+        } else if (pin.length() > 6) {
+            pin = Utilitaire.decodePin(pin);
+        }
+        optionalToken = tokenRepository.findByPin(pin);
         return optionalToken.map(this::activateUser).orElse(false);
     }
 

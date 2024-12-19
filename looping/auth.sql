@@ -7,11 +7,12 @@ CREATE TABLE Token(
    PRIMARY KEY(id_token)
 );
 
-CREATE TABLE Session(
-   id_session SERIAL,
-   duree NUMERIC(15,2)   NOT NULL,
+CREATE TABLE Setting(
+   id_setting SERIAL,
+   session_duree NUMERIC(15,2)  ,
+   tentative_max INTEGER NOT NULL,
    daty TIMESTAMP NOT NULL,
-   PRIMARY KEY(id_session)
+   PRIMARY KEY(id_setting)
 );
 
 CREATE TABLE Users(

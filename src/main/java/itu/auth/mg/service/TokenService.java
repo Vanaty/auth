@@ -15,7 +15,7 @@ import itu.auth.mg.util.Utilitaire;
 public class TokenService {
 
     @Autowired
-    private SessionService sessionService;
+    private SettingService sessionService;
     @Autowired
     TokenRepository tokenRepository;
 

@@ -23,34 +23,50 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<String>> register(@RequestBody User user) throws MessagingException {
-        userService.registerUser(user);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Inscription réussie ! Vérifiez votre e-mail.", null));
+        try {
+            userService.registerUser(user);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Inscription réussie ! Vérifiez votre e-mail.", null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ApiResponse<>(false, "Inscription failed ! Email dupliquer.", null));
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginData user) throws MessagingException {
-        if (userService.loginUser(user)) {
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginData user) throws Exception {
+        try {
+            if (userService.loginUser(user)) {
+                return ResponseEntity.ok(new ApiResponse<>(
+                    true, "Connexion réussie !", null
+                ));
+            } else {
+                return ResponseEntity.status(401).body(new ApiResponse<>(
+                    false, "Identifiants incorrects ou compte non activé.", null
+                ));
+            }
+        } catch (Exception e) {
             return ResponseEntity.ok(new ApiResponse<>(
-                true, "Connexion réussie !", null
-            ));
-        } else {
-            return ResponseEntity.status(401).body(new ApiResponse<>(
-                false, "Identifiants incorrects ou compte non activé.", null
-            ));
+                    false, e.getMessage(), null
+                ));
         }
     }
 
     @PostMapping("/login/otp")
-    public ResponseEntity<ApiResponse<Token>> verifyLoginOtp(@RequestBody Otp otp) throws MessagingException {
-        if (userService.verifyOtp(otp)) {
-            Token token = userService.genererToken(otp.getPin());
-            return ResponseEntity.ok(new ApiResponse<>(
-                true, "Pin validee !", token 
-            ));
-        } else {
+    public ResponseEntity<ApiResponse<Token>> verifyLoginOtp(@RequestBody Otp otp) throws Exception {
+        try {
+            if (userService.verifyOtp(otp)) {
+                Token token = userService.genererToken(otp.getPin());
+                return ResponseEntity.ok(new ApiResponse<>(
+                    true, "Pin validee !", token 
+                ));
+            } else {
+                return ResponseEntity.status(401).body(new ApiResponse<>(
+                    false, "Pin deja utilise ou a expierer.", null
+                ));
+            }
+        } catch(Exception e) {
             return ResponseEntity.status(401).body(new ApiResponse<>(
-                false, "Pin deja utilise ou a expierer.", null
-            ));
+                    false, e.getMessage(), null
+                ));
         }
     }
 

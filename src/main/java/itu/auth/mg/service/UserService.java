@@ -20,6 +20,8 @@ import java.util.Optional;
 @Service
 public class UserService {
     @Autowired
+    private TentativeService tentative;
+    @Autowired
     private TokenService tokenService;
 
     @Autowired
@@ -51,11 +53,13 @@ public class UserService {
         emailService.sendVerificationEmail(user.getEmail(), Utilitaire.encodePin(pin), pin);
     }
 
-    public boolean loginUser(LoginData data) throws MessagingException {
+    public boolean loginUser(LoginData data) throws Exception {
         Optional<User> userOptional = userRepository.findByEmail(data.getEmail());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (user.isVerified() && passwordUtil.verifyPassword(data.getPassword(), user.getPassword())) {
+            if (!tentative.canMake(user)) {
+                throw new Exception("Le nbr de tentative atteint");
+            } else if (user.isVerified() && passwordUtil.verifyPassword(data.getPassword(), user.getPassword())) {
                 String pin = Utilitaire.generatePin();
                 Token verificationToken = new Token();
 
@@ -68,6 +72,8 @@ public class UserService {
                 
                 tokenRepository.save(verificationToken);
                 return true;
+            } else {
+                tentative.increamentTentative(user);
             }
         }
         return false;
@@ -97,8 +103,20 @@ public class UserService {
         return false;
     }
 
-    public boolean verifyOtp(Otp otp) {
-        return tokenService.checkByPin(otp.getPin());
+    public boolean verifyOtp(Otp otp) throws Exception {
+        boolean succes = tokenService.checkByPin(otp.getPin());
+        Optional<Token> temps =  tokenRepository.findByPin(otp.getPin());
+        if (temps.isPresent()) {
+            User user = temps.get().getUser();
+            if (!tentative.canMake(user)) {
+                throw new Exception("Nombre de tentative atteint");
+            } else if(!succes) {
+                tentative.increamentTentative(user);
+            } else {
+                tentative.reinitialise(user);
+            }
+        }
+        return succes;
     }
 
     public Token genererToken(String pin) {
@@ -106,6 +124,14 @@ public class UserService {
         if (temps.isPresent()) {
             User user = temps.get().getUser();
             return tokenService.generateToken(user);            
+        }
+        return null;
+    }
+
+    public User getUserByOtp(Otp otp) {
+        Optional<Token> temps =  tokenRepository.findByPin(otp.getPin());
+        if (temps.isPresent()) {
+            return temps.get().getUser();
         }
         return null;
     }

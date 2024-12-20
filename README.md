@@ -5,10 +5,17 @@ Ce projet, **Auth**, est une application Spring Boot conçue pour la gestion de 
 
 ---
 
+## Liste des membres
+- **Nom et prénom :** SANDRATRINIAVO Tiavina Eric, Ando Fy Aimpenitra, Andriamarohasina Miravo Issa El Nassir ,Andry Malala Nirina Fabio 
+- **NumETU :** ETU002643, ETU002365 , ETU002378, ETU002413
+- **TODO :** Dans le fichier `TODO`
+
+---
+
 ## Prérequis
 Assurez-vous d'avoir les éléments suivants installés sur votre machine :
 
-1. **Java** (version 11 ou supérieure)
+1. **Java** (version 17 ou supérieure)
 2. **Maven Wrapper** (fourni avec le projet)
 3. **Docker** et **Docker Compose**
 
@@ -68,13 +75,6 @@ Une fois les conteneurs démarrés, l'application est accessible à l'adresse su
 - `src/main/resources/` : Fichiers de configuration, y compris `application.properties`.
 - `docker-compose.yml` : Fichier de configuration Docker Compose.
 - `mvnw` et `mvnw.cmd` : Wrapper Maven pour l'exécution de Maven sans installation préalable.
-
----
-
-## Liste des membres
-- **Nom et prénom :** SANDRATRINIAVO Tiavina Eric, Ando Fy Aimpenitra, Andriamarohasina Miravo Issa El Nassir ,Andry Malala Nirina Fabio 
-- **NumETU :** ETU002643, ETU002365 , ETU002378, ETU002413
-- **TODO :** Dans le fichier `TODO`
 
 ---
 

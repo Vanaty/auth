@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import itu.auth.mg.args.LoginData;
 import itu.auth.mg.args.Otp;
+import itu.auth.mg.model.Setting;
 import itu.auth.mg.model.Token;
 import itu.auth.mg.model.User;
 import itu.auth.mg.repositories.TokenRepository;
@@ -134,6 +135,20 @@ public class UserService {
             return temps.get().getUser();
         }
         return null;
+    }
+
+    public Optional<User> update(Long id, User session) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            User u = user.get();
+            // if(session.getEmail() != null)   u.setEmail(session.getEmail());
+            if(session.getPassword() != null)   u.setPassword(passwordUtil.hashPassword(session.getPassword()));
+            if(session.getNom() != null)   u.setNom(session.getNom());
+            if(session.getPrenom() != null)   u.setPrenom(session.getPrenom());
+            session.setId(id);
+            return Optional.of(userRepository.save(u));
+        }
+        return Optional.empty();
     }
 }
 

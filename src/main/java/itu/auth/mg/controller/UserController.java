@@ -1,5 +1,7 @@
 package itu.auth.mg.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +10,7 @@ import itu.auth.mg.args.ApiResponse;
 import itu.auth.mg.args.LoginData;
 import itu.auth.mg.args.Otp;
 import itu.auth.mg.args.VerificationData;
+import itu.auth.mg.model.Setting;
 import itu.auth.mg.model.Token;
 import itu.auth.mg.model.User;
 import itu.auth.mg.service.UserService;
@@ -20,6 +23,20 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody User user) {
+        try {
+            Optional<User> updatedUser = userService.update(id, user);
+            if (updatedUser.isPresent()) {
+                return ResponseEntity.ok(new ApiResponse(true, "User mise à jour avec succès", updatedUser.get()));
+            } else {
+                return ResponseEntity.status(404).body(new ApiResponse(false, "User non trouvée pour mise à jour", null));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ApiResponse(false, e.getMessage(), null));
+        }
+    }
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<String>> register(@RequestBody User user) throws MessagingException {

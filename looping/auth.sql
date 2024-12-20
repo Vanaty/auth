@@ -1,4 +1,4 @@
-CREATE TABLE Token(
+CREATE TABLE IF NOT EXISTS Token(
    id_token SERIAL,
    token VARCHAR(100) ,
    pin INTEGER,
@@ -7,15 +7,15 @@ CREATE TABLE Token(
    PRIMARY KEY(id_token)
 );
 
-CREATE TABLE Setting(
+CREATE TABLE IF NOT EXISTS Setting(
    id_setting SERIAL,
    session_duree NUMERIC(15,2)  ,
-   tentative_max INTEGER NOT NULL,
+   tentative_max INTEGER DEFAULT 3,
    daty TIMESTAMP NOT NULL,
    PRIMARY KEY(id_setting)
 );
 
-CREATE TABLE Users(
+CREATE TABLE IF NOT EXISTS Users(
    id_user SERIAL,
    nom VARCHAR(100) ,
    prenom VARCHAR(100) ,
@@ -28,7 +28,7 @@ CREATE TABLE Users(
    FOREIGN KEY(id_token) REFERENCES Token(id_token)
 );
 
-CREATE TABLE Tentative(
+CREATE TABLE IF NOT EXISTS Tentative(
    id_tentative SERIAL,
    compteur INTEGER,
    daty TIMESTAMP,
@@ -37,7 +37,7 @@ CREATE TABLE Tentative(
    FOREIGN KEY(id_user) REFERENCES Users(id_user)
 );
 
-CREATE TABLE Blocked(
+CREATE IF NOT EXISTS Blocked(
    id_blocked SERIAL,
    expiration TIMESTAMP,
    daty TIMESTAMP,

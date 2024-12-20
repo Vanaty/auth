@@ -30,10 +30,10 @@ git clone <URL_DU_DEPOT>
 cd auth
 ```
 
-### 2. Compilation et création du package
+### 2. Compilation et création du package (A ignorer)
 Utilisez la commande suivante pour nettoyer et construire le projet :
 ```bash
-./mvnw clean package
+mvn clean package
 ```
 Cette commande :
 - Nettoie les fichiers de construction précédents.
@@ -43,7 +43,7 @@ Cette commande :
 ### 3. Démarrer le projet avec Docker
 Utilisez Docker Compose pour lancer le projet et ses dépendances :
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 Cette commande :
 - Crée et démarre les conteneurs en mode détaché.
@@ -59,12 +59,12 @@ Une fois les conteneurs démarrés, l'application est accessible à l'adresse su
 ## Commandes utiles
 - **Arrêter les conteneurs Docker** :
   ```bash
-  docker-compose down
+  docker compose down
   ```
 
 - **Vérifier les logs des conteneurs** :
   ```bash
-  docker-compose logs -f
+  docker compose logs -f
   ```
 
 ---
@@ -86,6 +86,120 @@ Voici le Modèle Conceptuel de Données (MCD) utilisé dans ce projet :
 
 ---
 
+## Scénarios d'utilisation de l'API
+
+### User Controller
+- **Update User** :
+  - **Méthode** : PUT  
+  - **URL** : `localhost:8080/api/users/:id`  
+  - **Body** :  
+    ```json
+    {
+      "nom": "Eric",
+      "prenom": "Nass"
+    }
+    ```
+
+- **Register User** :
+  - **Méthode** : POST  
+  - **URL** : `localhost:8080/api/users/register`  
+  - **Body** :  
+    ```json
+    {
+      "email": "finaritraantsa@gmail.com",
+      "password": "test",
+      "nom": "Eric",
+      "prenom": "Sandratriniavo"
+    }
+    ```
+
+- **Vérifier OTP Register** :
+  - **Méthode** : POST  
+  - **URL** : `localhost:8080/api/users/verify`  
+  - **Body** :  
+    ```json
+    {
+      "pin": "205522"
+    }
+    ```
+
+- **Générer OTP 24 Hours** :
+  - **Méthode** : GET  
+  - **URL** : `localhost:8080/api/users/pin/:email`  
+
+- **Login** :
+  - **Méthode** : POST  
+  - **URL** : `localhost:8080/api/users/login`  
+  - **Body** :  
+    ```json
+    {
+      "email": "finaritraantsa@gmail.com",
+      "password": "test"
+    }
+    ```
+
+- **Verify Login OTP** :
+  - **Méthode** : POST  
+  - **URL** : `localhost:8080/api/users/login/otp`  
+  - **Body** :  
+    ```json
+    {
+      "pin": "756940"
+    }
+    ```
+
+- **Get All User** :
+  - **Méthode** : GET  
+  - **URL** : `localhost:8080/api/users/`
+
+### Setting Controller
+- **Get Setting By ID** :
+  - **Méthode** : GET  
+  - **URL** : `localhost:8080/api/setting/:id`  
+
+- **Update Setting** :
+  - **Méthode** : PUT  
+  - **URL** : `localhost:8080/api/setting/:id`  
+  - **Body** :  
+    ```json
+    {
+      "sessionDuree": 360,
+      "tentativeMax": 3
+    }
+    ```
+
+- **Add Setting** :
+  - **Méthode** : POST  
+  - **URL** : `localhost:8080/api/setting`  
+  - **Body** :  
+    ```json
+    {
+      "sessionDuree": 360,
+      "tentativeMax": 3
+    }
+    ```
+
+- **Get All Setting** :
+  - **Méthode** : GET  
+  - **URL** : `localhost:8080/api/setting`
+
+### Tentative Controller
+- **Réinitialiser Tentative** :
+  - **Méthode** : POST  
+  - **URL** : `localhost:8080/api/tentative/reinitialise/:idUser`  
+
+- **Valider Réinitialisation** :
+  - **Méthode** : POST  
+  - **URL** : `localhost:8080/api/tentative/verify`  
+  - **Body** :  
+    ```json
+    {
+      "pin": "056579"
+    }
+    ```
+
+---
+
 ## Support
 Pour toute question ou assistance, contactez :
 - **Email** : eritiavina31@gmail.com
@@ -94,4 +208,3 @@ Pour toute question ou assistance, contactez :
 ---
 
 Merci d'utiliser le projet **Auth** !
-

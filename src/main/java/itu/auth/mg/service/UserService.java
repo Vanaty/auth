@@ -42,16 +42,7 @@ public class UserService {
         user.setPassword(passwordUtil.hashPassword(user.getPassword()));
         userRepository.save(user);
 
-        
-        Token verificationToken = new Token();
-        // verificationToken.setToken(token);
-        String pin = Utilitaire.generatePin();
-        verificationToken.setPin(pin);
-        verificationToken.setExpiration(LocalDateTime.now().plusHours(24));
-        verificationToken.setUser(user);
-
-        tokenRepository.save(verificationToken);
-        emailService.sendVerificationEmail(user.getEmail(), Utilitaire.encodePin(pin), pin);
+        sendVerifyOtp(user);
     }
 
     public boolean loginUser(LoginData data) throws Exception {
@@ -149,6 +140,18 @@ public class UserService {
             return Optional.of(userRepository.save(u));
         }
         return Optional.empty();
+    }
+
+    public void sendVerifyOtp(User user) throws MessagingException {
+        Token verificationToken = new Token();
+        // verificationToken.setToken(token);
+        String pin = Utilitaire.generatePin();
+        verificationToken.setPin(pin);
+        verificationToken.setExpiration(LocalDateTime.now().plusHours(24));
+        verificationToken.setUser(user);
+
+        tokenRepository.save(verificationToken);
+        emailService.sendVerificationEmail(user.getEmail(), Utilitaire.encodePin(pin), pin);
     }
 }
 

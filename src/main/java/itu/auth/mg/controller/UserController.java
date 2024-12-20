@@ -1,5 +1,6 @@
 package itu.auth.mg.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import itu.auth.mg.args.VerificationData;
 import itu.auth.mg.model.Setting;
 import itu.auth.mg.model.Token;
 import itu.auth.mg.model.User;
+import itu.auth.mg.repositories.UserRepository;
 import itu.auth.mg.service.UserService;
 import jakarta.mail.MessagingException;
 
@@ -23,7 +25,14 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository ur;
 
+    @GetMapping("/")
+    public ResponseEntity<ApiResponse<List<User>>> getAllUser() {
+        return ResponseEntity.ok(new ApiResponse<List<User>>(true, "list users !", ur.findAll()));
+    }
+    
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody User user) {
         try {
@@ -101,5 +110,18 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse<>(true, "Compte activé avec succès !", null));
         }
         return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Token invalide ou expiré.", null));
+    }
+
+    @GetMapping("/pin/{email}")
+    public ResponseEntity<ApiResponse<List<User>>> getPin(@PathVariable String email) throws MessagingException {
+        if (email != null) {
+            Optional<User> u = ur.findByEmail(email);
+            if (u.isPresent()) {
+                userService.sendVerifyOtp(u.get());
+                return ResponseEntity.ok(new ApiResponse<List<User>>(true, "Verifier votre email !", null));      
+            }
+            return ResponseEntity.status(404).body(new ApiResponse<List<User>>(false, "Error user not found!", null));
+        }
+        return ResponseEntity.ok(new ApiResponse<List<User>>(true, "Email invalide !", null));      
     }
 }

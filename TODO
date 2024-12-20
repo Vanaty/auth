@@ -1,0 +1,42 @@
+UTIL
+    fonction sendEmail(destinataire token pin) (By Eric)
+    hashagePassword(user password)retourne mdp hashé (By Fabio)
+    generateApiresponse() (By Ando)
+Users
+    Base:
+        - user(id_user SERIAL,nom,prenom,email,password,is_verified,id_token) (By Nassir)
+    Metier:
+        - Model:
+            user{id_user SERIAL,nom,prenom,email,password,is_verified} (By Eric)
+            CRUD (By Nassir)
+            verifyByToken(token){return user by token} (By Eric)
+            verifyByPin(pin){return user by pin} (By Ando)
+            activateUser(token){save user apres verification pin par email} (By Fabio)
+            registerUser(user){generation token,pin et envoie email} (By ANdo)
+        - Controlleur:
+            POST
+            GET
+            UPDATE
+            DELETE
+Token
+    Base:
+        Token(id,pin,token,expiration,actve(true,false)) (By Nassir)
+    Metier:
+        CRUD (By Nassir)
+Configuration
+    Base:
+       setting(id,sessionDuree,Tentative) (By Ando)
+    Metier:
+        CRUD (By Ando)
+Blocked
+    Base:
+        Blocked(id_bocked,expiration,daty,id_user) (By Fabio)
+    Class:id,expiration,user (By Fabio) 
+Tentative:
+    Base:id,daty,compteur,iduser (By Eric)
+    Class:id,compteur,daty,user (By Eric)
+    Metier:
+        reinitialise(user) (By Eric)
+        incrementTentative(user) (By Ando)
+        canMake(user) (By Fabio)
+        prepareReinitialisation(user) (By Eric)

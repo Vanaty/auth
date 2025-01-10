@@ -57,24 +57,6 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginData user) throws Exception {
-        try {
-            if (userService.loginUser(user)) {
-                return ResponseEntity.ok(new ApiResponse<>(
-                    true, "Connexion réussie !", null
-                ));
-            } else {
-                return ResponseEntity.status(401).body(new ApiResponse<>(
-                    false, "Identifiants incorrects ou compte non activé.", null
-                ));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.ok(new ApiResponse<>(
-                    false, e.getMessage(), null
-                ));
-        }
-    }
 
     @PostMapping("/login/otp")
     public ResponseEntity<ApiResponse<Token>> verifyLoginOtp(@RequestBody Otp otp) throws Exception {
@@ -87,6 +69,25 @@ public class UserController {
             } else {
                 return ResponseEntity.status(401).body(new ApiResponse<>(
                     false, "Pin deja utilise ou a expierer.", null
+                ));
+            }
+        } catch(Exception e) {
+            return ResponseEntity.status(401).body(new ApiResponse<>(
+                    false, e.getMessage(), null
+                ));
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<Token>> login(@RequestBody LoginData login) throws Exception {
+        try {
+            if (userService.loginUser(login)) {
+                return ResponseEntity.ok(new ApiResponse<>(
+                    true, "Login success !Verifier votre email", null
+                ));
+            } else {
+                return ResponseEntity.status(401).body(new ApiResponse<>(
+                    false, "Login failed !", null
                 ));
             }
         } catch(Exception e) {

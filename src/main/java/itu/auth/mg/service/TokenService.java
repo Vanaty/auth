@@ -43,4 +43,15 @@ public class TokenService {
         tokenRepository.save(token);
         return token;
     }
+
+    public boolean isActive(String tok) {
+        Optional<Token> tk = tokenRepository.findByToken(tok);
+        if (tk.isPresent()) {
+            Token token = tk.get();
+            if(token.isActive() && token.getExpiration().isAfter(LocalDateTime.now())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

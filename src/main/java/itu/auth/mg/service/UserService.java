@@ -37,6 +37,9 @@ public class UserService {
     @Autowired
     private PasswordUtil passwordUtil;
 
+    @Autowired
+    private FirestoreSyncService sycnService;
+
     public void registerUser(User user) throws MessagingException {
         
         user.setPassword(passwordUtil.hashPassword(user.getPassword()));
@@ -87,6 +90,7 @@ public class UserService {
             User user = token.getUser();
             user.setVerified(true);
             userRepository.save(user);
+            sycnService.syncUserToFirestore(user);
 
             token.setActive(false);
             tokenRepository.save(token);

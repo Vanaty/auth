@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import itu.auth.mg.args.LoginData;
 import itu.auth.mg.args.Otp;
-import itu.auth.mg.model.Setting;
 import itu.auth.mg.model.Token;
 import itu.auth.mg.model.User;
 import itu.auth.mg.repositories.TokenRepository;
